@@ -1,8 +1,8 @@
 # wMICA
  Weighted Maximal Information Component Analysis
 
-Updated 2/22/2021 to be significantly faster and install more rationally.
-Now works for both Unix and Windows-based machines! 
+**Updated 2/22/2021 to be significantly faster and install more rationally.
+**Now works for both Unix and Windows-based machines! 
 
 Version: 0.9 Author: Christoph Rau
 
@@ -10,7 +10,7 @@ A weighted implementation of Maximal Information Component Analysis
 
 wMICA is an updated form of Maximal Information Component Analysis as originally described here: http://www.ncbi.nlm.nih.gov/pubmed/23487572
 
-Usage: devtools::install_github("ChristophRau/wMICA/wMICA")
+**Usage: devtools::install_github("ChristophRau/wMICA/wMICA")
 
 MICA is used for the analysis of large interconnected networks and the identification of modules of similarly-acting nodes within the larger network. It was designed specifically to work with gene expression datasets (RNA microarrays, RNAseq, etc), but is expandable to any relational network. wMICA avoids two common pitfalls by using the Maximal Information instead of Pearson correlation to calulate node relatedness, which preserves non-linear relationships in the data, as well as a interaction component modeling process to allow each node to proportionally have membership in all modules.
 
