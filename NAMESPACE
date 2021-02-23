@@ -2,6 +2,10 @@
 
 export(ICMg.links.sampler.SeedsAndWeights)
 export(ICMg.get.comp.memberships)
+export(findRecommendedModuleNumber)
+export(wMICA_GetMIC)
+export(wMICA_MakeLinksFromMICFile)
+export(wMICA_RunMIC)
 export(wMICA.Run)
 import(minerva)
 import(parallel)
