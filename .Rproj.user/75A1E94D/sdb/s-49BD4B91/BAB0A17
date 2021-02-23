@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1505250696340.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BAB0A17",
+    "lastKnownWriteTime" : 7236850772546188399,
+    "last_content_update" : 1505250696340,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "context" : "package:base:::if"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_code_browser"
+}

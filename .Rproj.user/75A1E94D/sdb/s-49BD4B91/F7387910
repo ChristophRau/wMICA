@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(sem) # for SEM fitting, RAM model format 'mod' and Maximum likelihood indices of SEM fit.\nlibrary(MASS) # for stepAIC\nlibrary(GeneNet) #for pcor.shrink to compute conditioning on all remaining vars - earlier versions were in 2 pkgs: GeneCycle and GeneNet\nlibrary(GeneCycle)\nlibrary(ggm) # for pcor to compute conditioning on individual variables \nlibrary(rcom)\nlibrary(gplots)\nlibrary(e1071) # for impute: to handle NA in the data by filling in the median\nlibrary(impute) #\n\nsource(\"updatedneo.txt\")\n\noutname=\"NEO_Out.csv\"\n\n\noutfile=file(outname,\"w\")\ncat(\"Gene1,Gene2,Forward_Min,Reverse_Min\",file=outfile,sep=\"\\n\")\nclose(outfile)\n\n\nAll_eQTLs=read.csv(\"IsoeQTLs_Windowed_2Mb.csv\",check.names=F,header=F)\n\nindata=read.csv(\"ISO_0.5.csv\")\ntemp=indata[,5]\ntemp=temp[1:156]\ntemp=as.vector(temp)\n\nexpr=read.csv(\"IsoOnly.csv\",row.names=1,check.names=F)\nmatch(temp,rownames(expr))\nexpr=expr[match(temp,rownames(expr)),]\ndim(expr)\nexpr=t(expr)\n\n\n\n\n\n\nSNPs=read.csv(\"ALL_EMMA_SNPS_Filtered.csv\",row.names=1,check.names=F)\nSNPs=t(SNPs)\nnSNPs=ncol(SNPs)\n\n\nLINKS=read.csv(\"All_Links.csv\",check.names=F,header=F)\n\nNEO_Data=cbind(SNPs,expr)\ncolumnnames=colnames(NEO_Data)\ncolumnnames=gsub(\"-\",\"\",columnnames,fixed=T)\ncolumnnames=gsub(\"_\",\"\",columnnames,fixed=T)\ncolnames(NEO_Data)=columnnames\n\noutfile=file(outname,\"a\")\nfor(i in 19852:20147){\n  print(i/nrow(LINKS))\n  gene1=LINKS[i,1]\n  gene2=LINKS[i,2]\n  name1=colnames(expr)[gene1]\n  name2=colnames(expr)[gene2]\n  gene1=gene1+nSNPs\n  gene2=gene2+nSNPs\n  g1rows=grep(paste(\"^\",name1,\"$\",sep=\"\"),All_eQTLs[,1])\n  g2rows=grep(paste(\"^\",name2,\"$\",sep=\"\"),All_eQTLs[,1])\n  Sub_eQTLs=rbind(All_eQTLs[g1rows,],All_eQTLs[g2rows,])\n  Sub_eQTLs=Sub_eQTLs[Sub_eQTLs[,11]<eQTL_cutoff,]\n  Good_SNPs=names(table(as.matrix(Sub_eQTLs[,10])))\n  SNP_to_use=match(Good_SNPs,colnames(SNPs))\n  SNP_to_use=SNP_to_use[!is.na(SNP_to_use)]\n  if(length(SNP_to_use)>0){\n  SMA_Single_Gene=single.marker.analysis(NEO_Data,snpcols=SNP_to_use,genecols=gene1,traitcols=gene2)\n  \n  SMA_Working=SMA_Single_Gene\n  SMA_Working=rbind(SMA_Working[SMA_Working[,6]>.75,],SMA_Working[SMA_Working[,7]>.75,])\n  SMA_Working=rbind(SMA_Working[SMA_Working[,12]<.05,],SMA_Working[SMA_Working[,13]<.05,])\n  SMA_Working=SMA_Working[,c(1,3,5,6,7,12,13)]\n  forward_min=min(SMA_Working[,6])\n  reverse_min=min(SMA_Working[,7])\n  outrow=paste(name1,name2,forward_min,reverse_min,sep=\",\")\n  cat(outrow,file=outfile,sep=\"\\n\")\n  }\n  else{\n    cat(paste(name1,name2,\"Inf\",\"Inf\",sep=\",\"),file=outfile,sep=\"\\n\")\n  }\n  \n}\n\nclose(outfile)\n\n\n\n\n\n",
+    "created" : 1505240342016.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1948695751",
+    "id" : "F7387910",
+    "lastKnownWriteTime" : 1431991848,
+    "last_content_update" : 1431991848,
+    "path" : "C:/Work/1- Projects/HMDP-Isoproterenol Transcriptome Arrays/Round 3 Final/Control ISO Ratio MICA/ISO/NEO/SUPERNEO.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

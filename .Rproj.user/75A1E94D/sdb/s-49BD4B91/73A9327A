@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#This will classify every edge as follows:\n#Undirected - No significacnt edge exists\n#Forward - Edge goes from A --> B  (will reverse A and B if direction is B-->A so that all edges are 'forward' edges (for Cytoscape))\n#Indeterminate - Conflicting directionality information causes final value to fall within Indeterminate threshold.\n#\n#\n#\n#\noptions(stringsAsFactors = FALSE)\n\n\n#Files (may already be loaded)\nLinks=read.csv(\"Links.csv\")   #  X by 2 matrix of all edges  Optional 3rd column if you have something else you want to add to the final table (correlation to phenotype, or the like)\nNEO_Out=read.csv(\"NEO_Out_0p0001.csv\",check.names=F)\n\n#Parameters\n\noutfilename=\"Module_Directed.csv\"\n\nleo_threshold=.75 #threshold for minimum strength of LEO score to consider\np_val_threshold=.05 #threshold for significance of edge directionality\n\n\nIndeterminate=leo_threshold   #Threshold for 'significant' A-->B or B-->A calling.  Setting this to the minimum strength needed for an edge is a good default\n\n\n#Filter to relevant columns\nNEO_Out=data.frame(\"SNP\"=NEO_Out[,1],\"Gene 1\"=NEO_Out[,3],\"Gene 2\"=NEO_Out[,5],\"leo.nb.AtoB\"=NEO_Out$leo.nb.AtoB,\n                   \"leo.nb.BtoA\"=NEO_Out$leo.nb.BtoA,\"mlogp.M.AtoB\"=NEO_Out$mlogp.M.AtoB,\"mlogp.M.BtoA\"=NEO_Out$mlogp.M.BtoA,\n                   \"PPathAB\"=NEO_Out$PPathAB)\n#Shorten To relevant relationships\nNEO_Out=NEO_Out[NEO_Out$leo.nb.AtoB>=leo_threshold | NEO_Out$leo.nb.BtoA>=leo_threshold,]\nNEO_Out=NEO_Out[NEO_Out$mlogp.M.AtoB<=p_val_threshold | NEO_Out$mlogp.M.BtoA<=p_val_threshold,]\n\n\n\n\n#Begin!\n\noutdata=c()\nfor(i in 1:nrow(Links)){\n  print(i*100/nrow(Links))  #I always like to see what % I am to completion...\n\n  gene1=Links[i,1]  #Get gene IDs\n  gene2=Links[i,2]\n  temp=grep(gene1,NEO_Out[,2])  #Figure out if there are any links from 1-->2\n  temp2=grep(gene2,NEO_Out[,3])\n  temp=intersect(temp,temp2)\n  Mrows=NEO_Out[temp,]  #1 --> 2 done.\n  temp=grep(gene2,NEO_Out[,2])  #Figure out if there are any links from 2-->1\n  temp2=grep(gene1,NEO_Out[,3])\n  temp=intersect(temp,temp2)\n\n  working_rows=NEO_Out[temp,] #reverse entry to everything flows from 1 --> 2\n  working_rows=cbind(working_rows[,1],working_rows[,3],working_rows[,2],-working_rows[,4:5],working_rows[,7],working_rows[,6],working_rows[,8])\n  colnames(working_rows)=c(\"SNP\",\"Gene.1\",\"Gene.2\",\"leo.nb.AtoB\", \"leo.nb.BtoA\", \"mlogp.M.AtoB\" ,\"mlogp.M.BtoA\",  \"PPathAB\")\n\n\n  Mrows=rbind(Mrows,working_rows)  #All_Information\n  Forward=Mrows[Mrows[,4]>0,] # 1 --> 2 Rows\n  Reverse=Mrows[Mrows[,4]<0,] # 2 --> 1 Rows\n\n  if(dim(Mrows)[1]==0){\n    outrow=c(gene1,gene2,\"undirected\",Links[i,3],\"NA\")\n  } else if(dim(Reverse)[1]==0){\n    outrow=c(gene1,gene2,\"forward\",Links[i,3],sum(Forward[,4]))\n  } else if(dim(Forward)[1]==0){\n    outrow=c(gene2,gene1,\"forward\",Links[i,3],-sum(Reverse[,4]))\n  } else {\n    Forward_Sum=sum(Forward[,4])\n    Reverse_Sum=sum(Reverse[,4])\n    Direction_Sum=Forward_Sum-Reverse_Sum\n    if(Direction_Sum>Indeterminate){\n      outrow=c(gene1,gene2,\"forward\",Links[i,3],Direction_Sum)\n    } else if(Direction_Sum< -Indeterminate){\n      outrow=c(gene2,gene1,\"forward\",Links[i,3],-Direction_Sum)\n    } else {\n      outrow=c(gene1,gene2,\"Indeterminate\",Links[i,3],Direction_Sum)\n    }\n\n\n  }\n  outdata=rbind(outdata,outrow)\n  outrow=rep(NA,5)  # In case of emergency (if somehow something manages to not trip one of the if statements above), by default the row is NA.\n}\n\n\nwrite.csv(outdata,file=outfilename,row.names=F)\n\n\n\n",
+    "created" : 1505243121686.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1329300637",
+    "id" : "73A9327A",
+    "lastKnownWriteTime" : 1505251545,
+    "last_content_update" : 1505251545472,
+    "path" : "C:/Work/8 - Code/SuperNeo/NEO to Directed Graph.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

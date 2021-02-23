@@ -1,0 +1,4 @@
+all: wMICA.so
+wMICA.so: wMICA.c
+        MAKEFLAGS='CFLAGS=-O2 -Wall' /usr/bin/R CMD SHLIB wMICA.c
+clean:

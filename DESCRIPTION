@@ -1,0 +1,16 @@
+Package: wMICA
+Type: Package
+Title: weighted Maximal Information Component Analysis
+Version: 0.9
+Date: 2021-02-22
+Author: Christoph Rau
+Maintainer: Christoph Rau <ChristophRau@unc.edu>
+Description:  Algorithms to set up, perform and analyze a biological network using the wMICA approach
+License: GPL (>=3)
+Depends: R (>= 4.0), minerva, parallel
+Imports: minerva, parallel
+URL: 
+BugReports: 
+biocViews: 
+NeedsCompilation: yes
+
