@@ -3,7 +3,7 @@
 
 **Updated 2/22/2021 to be significantly faster and install more rationally.**
 
-**Now works for both Unix and Windows-based machines! **
+**Now works for both Unix and Windows-based machines!**
 
 Version: 0.9 Author: Christoph Rau
 
