@@ -16,7 +16,7 @@
 'wMICA.Run'<-function(input,output_prefix="MICA",n.cores=detectCores()-1,threshold=.4,C=20,Seeds=c(),Weight=0,
                       alpha=10,beta=.01,B.num=10,B.size=10,S.num=10,S.size=10,links_file=c()){
 
-  if(length(links_file==0)){
+  if(length(links_file)==0){
   wMICA_GetMIC(input,output_prefix,n.cores,threshold)
     links_file=paste0(output_prefix,"_Links.csv")}
 
@@ -31,6 +31,7 @@ LINKS=read.csv(links_file)
 LINKS=apply(LINKS,2,as.numeric)
 nodes=c(LINKS[,1],LINKS[,2])
 nodes=length(table(nodes))
+edges=nrow(LINKS)
 
 print(paste0("There are ",nodes," genes and ", edges," edges.  Starting Weighted ICMg."))
 wICMg=ICMg.links.sampler.SeedsAndWeights(L = LINKS,C = C,Seeds = Seeds,Weight = Weight,
